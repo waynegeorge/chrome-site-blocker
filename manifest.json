@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Site Blocker",
+  "version": "1.0.0",
+  "description": "Blocks chosen websites during scheduled times.",
+  "minimum_chrome_version": "118",
+  "permissions": ["storage", "declarativeNetRequest", "tabs", "alarms"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Site Blocker",
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

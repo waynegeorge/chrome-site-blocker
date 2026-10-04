@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Site Blocker Settings</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wrap { max-width: 860px; margin: 0 auto; padding: 28px 16px 64px; }
+    header h1 { font-size: 22px; }
+    header p { margin: 4px 0 0; }
+    nav { display: flex; gap: 4px; margin: 20px 0; border-bottom: 1px solid var(--border); }
+    nav button {
+      border: none; background: none; border-radius: 0; padding: 10px 14px; color: var(--muted);
+      border-bottom: 2px solid transparent; margin-bottom: -1px;
+    }
+    nav button:hover { background: none; color: var(--text); }
+    nav button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
+    .card h2 { font-size: 16px; margin-bottom: 4px; }
+    .card > p { margin: 0 0 12px; }
+
+    table { width: 100%; border-collapse: collapse; }
+    th { text-align: left; font-weight: 600; font-size: 12px; color: var(--muted); padding: 0 8px 8px; }
+    td { padding: 6px 8px; border-top: 1px solid var(--border); vertical-align: middle; }
+    td.num, th.num { text-align: right; }
+    .sites input[type="text"] { width: 100%; min-width: 160px; }
+    .sites td:first-child, .sites th:first-child { width: 52px; }
+    .sites td:last-child { width: 40px; text-align: right; }
+
+    .add-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .add-row input { flex: 1 1 240px; }
+
+    .sched-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .sched-head input.name { font-weight: 600; font-size: 15px; flex: 1 1 200px; }
+    .days { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .day input { position: absolute; opacity: 0; width: 0; height: 0; }
+    .day span {
+      display: inline-block; min-width: 46px; text-align: center; padding: 5px 8px; border-radius: 8px;
+      border: 1px solid var(--border); cursor: pointer; user-select: none;
+    }
+    .day input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+    .day input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .range { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .hint { margin: 0 0 10px; }
+
+    .buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+    .table-scroll { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Site Blocker</h1>
+      <p class="muted">Changes save automatically.</p>
+    </header>
+
+    <nav role="tablist">
+      <button role="tab" data-tab="sites">Sites</button>
+      <button role="tab" data-tab="schedules">Schedules</button>
+      <button role="tab" data-tab="data">Data</button>
+    </nav>
+
+    <section id="tab-sites" role="tabpanel">
+      <div class="card">
+        <div class="table-scroll">
+          <table class="sites">
+            <thead><tr><th>On</th><th>Domains</th><th>Schedule</th><th>Status now</th><th></th></tr></thead>
+            <tbody id="sites-body"></tbody>
+          </table>
+        </div>
+        <form id="add-site" class="add-row">
+          <input type="text" id="add-domains" placeholder="Add a site, e.g. reddit.com (separate extra domains with commas)" aria-label="New site domains">
+          <select id="add-schedule" aria-label="Schedule for new site"></select>
+          <button class="primary" type="submit">Add site</button>
+        </form>
+      </div>
+      <p class="muted small">Each domain also covers its subdomains. Only direct visits are blocked; content embedded in other sites still loads.</p>
+    </section>
+
+    <section id="tab-schedules" role="tabpanel" hidden>
+      <div id="schedules"></div>
+      <button id="add-schedule-btn" class="primary">+ Add schedule</button>
+      <p class="muted small">Times are when sites are blocked. Sites can also use “Always”, which blocks at all times.</p>
+    </section>
+
+    <section id="tab-data" role="tabpanel" hidden>
+      <div class="card">
+        <h2>Settings</h2>
+        <p class="muted">Save your sites and schedules to a JSON file, or load them from one.</p>
+        <div class="buttons">
+          <button id="export-settings">Export settings</button>
+          <button id="import-settings">Import settings…</button>
+          <input type="file" id="import-file" accept=".json,application/json" hidden>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Activity</h2>
+        <p class="muted" id="activity-summary"></p>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Site</th><th class="num">Blocked today</th><th class="num">Blocked total</th><th class="num">Passes</th><th>Last attempt</th></tr></thead>
+            <tbody id="activity-body"></tbody>
+          </table>
+        </div>
+        <div class="buttons" style="margin-top: 14px">
+          <button id="export-log">Export activity log</button>
+          <button id="clear-log" class="danger">Clear log</button>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
