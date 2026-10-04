@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Source for the PNG icons. Clock (schedule) with a no-entry badge (blocking). -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3d7bea"/>
+      <stop offset="1" stop-color="#2459c2"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bg)"/>
+  <circle cx="58" cy="58" r="36" fill="none" stroke="#fff" stroke-width="10"/>
+  <path d="M58 36v22l14 10" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="94" cy="94" r="27" fill="#e0483c" stroke="#2459c2" stroke-width="6"/>
+  <rect x="80" y="89" width="28" height="10" rx="3" fill="#fff"/>
+</svg>
