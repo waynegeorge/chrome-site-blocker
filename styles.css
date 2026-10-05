@@ -47,7 +47,7 @@ h1, h2, h3 { margin: 0; line-height: 1.2; }
 .muted { color: var(--muted); }
 .small { font-size: 12px; }
 
-button, select, input[type="text"] {
+button, select, input[type="text"], textarea {
   font: inherit;
   color: inherit;
 }
@@ -66,13 +66,13 @@ button.danger { color: var(--danger); }
 button.link { border: none; background: none; color: var(--accent); padding: 4px 6px; }
 button.icon { padding: 4px 8px; line-height: 1; }
 
-select, input[type="text"] {
+select, input[type="text"], textarea {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px 8px;
 }
-input[type="text"]:focus, select:focus, button:focus-visible {
+input[type="text"]:focus, textarea:focus, select:focus, button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 1px;
 }

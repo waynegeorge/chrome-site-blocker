@@ -1,5 +1,6 @@
 import {
   MAX_LOG_ENTRIES,
+  MAX_NOTE_LENGTH,
   PASS_MINUTES,
   defaultSettings,
   hostFromUrl,
@@ -147,6 +148,22 @@ function handleMessage(msg) {
         await appendLog('pass', msg.url, status);
         await applyBlocking(); // already inside the queue, so call directly
       }
+      return { ok: true };
+    }
+
+    if (msg.type === 'note') {
+      const text = String(msg.text ?? '').trim().slice(0, MAX_NOTE_LENGTH);
+      const host = hostFromUrl(msg.url);
+      if (!text || !host) return { ok: false, error: 'A note needs a reason and a site.' };
+      const { notes = [] } = await chrome.storage.local.get('notes');
+      notes.push({ id: crypto.randomUUID(), ts: new Date().toISOString(), host, url: msg.url, text });
+      await chrome.storage.local.set({ notes });
+      return { ok: true };
+    }
+
+    if (msg.type === 'deleteNote') {
+      const { notes = [] } = await chrome.storage.local.get('notes');
+      await chrome.storage.local.set({ notes: notes.filter((n) => n.id !== msg.id) });
       return { ok: true };
     }
 

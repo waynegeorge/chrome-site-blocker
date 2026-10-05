@@ -18,7 +18,12 @@
     #reason { margin: 10px 0 0; }
     #lift { font-size: 20px; font-weight: 600; margin: 24px 0 4px; }
     #countdown { margin: 0 0 28px; }
-    #go { padding: 10px 20px; font-size: 15px; }
+    #note-form { text-align: left; margin: 0 0 20px; }
+    #note-form label { display: block; font-weight: 600; margin-bottom: 6px; }
+    #note-text { width: 100%; min-height: 72px; resize: vertical; }
+    .note-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; }
+    #save-note { padding: 10px 20px; font-size: 15px; }
+    #go { color: var(--muted); }
     #url { margin-top: 28px; word-break: break-all; }
     footer { margin-top: 24px; }
   </style>
@@ -30,9 +35,20 @@
     <p id="reason" class="muted"></p>
     <p id="lift"></p>
     <p id="countdown" class="muted"></p>
-    <button id="go" class="primary" hidden></button>
+    <form id="note-form" hidden>
+      <label for="note-text">Reason for visiting</label>
+      <textarea id="note-text" maxlength="1000" placeholder="Why do you want to visit this site?"></textarea>
+      <div class="note-actions">
+        <span id="note-status" class="muted small" role="status"></span>
+        <button type="submit" id="save-note" class="primary">Save note</button>
+      </div>
+    </form>
+    <button id="go" hidden></button>
     <p id="url" class="muted small"></p>
-    <footer><button id="settings" class="link small">Settings</button></footer>
+    <footer>
+      <button id="notes" class="link small">Notes</button>
+      <button id="settings" class="link small">Settings</button>
+    </footer>
   </main>
   <script type="module" src="blocked.js"></script>
 </body>

@@ -15,6 +15,8 @@ After editing the code, click the reload icon on the extension's card in `chrome
 ## Using it
 
 - **Toolbar popup:** shows what is blocked right now and today's attempt count.
+- **Block page:** write a reason for visiting and save it as a note. A reason typed before taking a pass is saved automatically.
+- **Notes** (popup → Notes, or the block page's Notes link): notes grouped by day, each with time, domain and reason. Delete a note with its ✕, or export them all as JSON.
 - **Settings** (popup → Settings, or right-click the icon → Options):
   - **Sites:** turn each site on or off, edit its domains, choose its schedule, and add new sites.
   - **Schedules:** set days and blocked time ranges in 15-minute steps, and create extra named schedules.
@@ -25,8 +27,8 @@ After editing the code, click the reload icon on the extension's card in `chrome
 | File | Purpose |
 | --- | --- |
 | `manifest.json` | Extension manifest (MV3) |
-| `background.js` | Service worker: updates blocking rules, redirects open tabs, handles passes and logging |
+| `background.js` | Service worker: updates blocking rules, redirects open tabs, handles passes, logging and notes |
 | `lib/core.js` | Schedule, domain and validation logic (no Chrome APIs) |
 | `lib/ui.js` | Shared DOM and formatting helpers |
-| `options.*`, `popup.*`, `blocked.*` | Settings page, toolbar popup, block page |
+| `options.*`, `popup.*`, `blocked.*`, `notes.*` | Settings page, toolbar popup, block page, notes page |
 | `tests/core.test.mjs` | Tests for `lib/core.js`: `node tests/core.test.mjs` |

@@ -52,4 +52,11 @@ const badRange = (start, end) => ({ ...s, schedules: [{ ...s.schedules[0], range
 assert.throws(() => c.validateSettings(badRange('10:00', '09:00')), /range/);
 assert.throws(() => c.validateSettings(badRange('10:10', '11:00')), /range/);
 
+// Notes grouped by local day
+const note = (ts) => ({ id: ts, ts: d(ts).toISOString() });
+const groups = c.groupNotesByDay([note('2026-10-04T23:59'), note('2026-10-05T09:00'), note('2026-10-05T00:00'), note('2026-10-05T17:30')]);
+assert.deepEqual(groups.map((g) => g.day), ['2026-10-05', '2026-10-04']);
+assert.deepEqual(groups[0].notes.map((n) => n.id), ['2026-10-05T17:30', '2026-10-05T09:00', '2026-10-05T00:00']);
+assert.deepEqual(c.groupNotesByDay([]), []);
+
 console.log('All core tests passed.');

@@ -8,6 +8,7 @@
     body { width: 340px; }
     header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid var(--border); }
     h1 { font-size: 15px; }
+    .header-buttons { display: flex; gap: 6px; }
     ul { list-style: none; margin: 0; padding: 6px 0; max-height: 380px; overflow-y: auto; }
     li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 7px 14px; }
     li .domain { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
@@ -21,7 +22,10 @@
       <h1>Site Blocker</h1>
       <div id="now" class="muted small"></div>
     </div>
-    <button id="settings">Settings</button>
+    <div class="header-buttons">
+      <button id="notes">Notes</button>
+      <button id="settings">Settings</button>
+    </div>
   </header>
   <ul id="sites"></ul>
   <footer id="attempts" class="muted small"></footer>

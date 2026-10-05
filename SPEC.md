@@ -50,6 +50,14 @@ Default sites (all enabled, all on the Default schedule):
 - The settings page shows totals per host and can export the full log as a single JSON file, or clear it.
 - The log keeps the most recent 10,000 entries.
 
+## Notes
+
+- The block page has a "Reason for visiting" box. Saving it records a note with the domain (host), timestamp and reason.
+- If a reason has been typed but not saved when the pass or "Continue to site" button is clicked, it is saved first.
+- Reasons are limited to 1,000 characters.
+- The notes page lists notes grouped by day (newest first), each row showing time, domain and reason, with a ✕ to delete it (no confirmation).
+- All notes can be exported as a single JSON file, grouped by day.
+
 ## Settings import/export
 
 - All sites and schedules can be exported to a JSON file and imported again (replacing current settings after confirmation).
@@ -58,9 +66,10 @@ Default sites (all enabled, all on the Default schedule):
 
 ## Pages
 
-- **Popup** (toolbar icon): current status of every site, today's attempt count, link to settings.
+- **Popup** (toolbar icon): current status of every site, today's attempt count, links to notes and settings.
 - **Settings page**: tabs for Sites, Schedules, and Data (import/export, activity).
-- **Block page**.
+- **Block page**, with links to notes and settings.
+- **Notes page**.
 
 ## Installation
 

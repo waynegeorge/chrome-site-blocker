@@ -1,10 +1,15 @@
 import { DAY_NAMES, siteLabel, siteStatus } from './lib/core.js';
-import { clock, h, statusText } from './lib/ui.js';
+import { clock, h, openNotes, statusText } from './lib/ui.js';
 
 const ORDER = { blocked: 0, pass: 1, allowed: 2, off: 3 };
 
 document.getElementById('settings').addEventListener('click', () => {
   chrome.runtime.openOptionsPage();
+  window.close();
+});
+
+document.getElementById('notes').addEventListener('click', async () => {
+  await openNotes();
   window.close();
 });
 

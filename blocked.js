@@ -1,5 +1,5 @@
 import { PASS_MINUTES, hostFromUrl, statusForHost } from './lib/core.js';
-import { formatDuration, formatWhen } from './lib/ui.js';
+import { formatDuration, formatWhen, openNotes } from './lib/ui.js';
 
 const reason = new URLSearchParams(location.search).get('r');
 const original = location.hash.slice(1);
@@ -7,12 +7,40 @@ const host = hostFromUrl(original);
 const $ = (id) => document.getElementById(id);
 
 $('settings').addEventListener('click', () => chrome.runtime.openOptionsPage());
+$('notes').addEventListener('click', openNotes);
 
 let currentState = null;
 
+// Saves the typed reason, if any. Returns false only if there was text and saving failed.
+async function saveNote() {
+  const text = $('note-text').value.trim();
+  if (!text) return true;
+  const res = await chrome.runtime.sendMessage({ type: 'note', url: original, text });
+  if (!res?.ok) {
+    $('note-status').textContent = `Could not save: ${res?.error ?? 'unknown error'}`;
+    return false;
+  }
+  $('note-text').value = '';
+  $('note-status').textContent = 'Note saved.';
+  return true;
+}
+
+$('note-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!$('note-text').value.trim()) return $('note-text').focus();
+  await saveNote();
+});
+
+$('note-text').addEventListener('input', () => { $('note-status').textContent = ''; });
+
 $('go').addEventListener('click', async () => {
+  $('go').disabled = true;
+  // An unsaved reason goes with the visit rather than being lost.
+  if (!(await saveNote())) {
+    $('go').disabled = false;
+    return;
+  }
   if (currentState === 'blocked') {
-    $('go').disabled = true;
     await chrome.runtime.sendMessage({ type: 'pass', url: original });
   }
   location.replace(original);
@@ -44,6 +72,7 @@ async function render() {
     $('go').textContent = 'Continue to site';
   }
   $('go').hidden = !host;
+  $('note-form').hidden = !host;
 }
 
 await render();
