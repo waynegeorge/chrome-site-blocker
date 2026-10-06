@@ -15,7 +15,7 @@ After editing the code, click the reload icon on the extension's card in `chrome
 ## Using it
 
 - **Toolbar popup:** shows what is blocked right now and today's attempt count.
-- **Block page:** write a reason for visiting and save it as a note. A reason typed before taking a pass is saved automatically.
+- **Block page:** write a reason for visiting and save it as a note. Taking a 5-minute pass requires a reason, which is saved as a note tagged **Unblocked**.
 - **Notes** (popup → Notes, or the block page's Notes link): notes grouped by day, each with time, domain and reason. Delete a note with its ✕, or export them all as JSON.
 - **Settings** (popup → Settings, or right-click the icon → Options):
   - **Sites:** turn each site on or off, edit its domains, choose its schedule, and add new sites.

@@ -1,4 +1,4 @@
-import { dayKey, groupNotesByDay } from './lib/core.js';
+import { PASS_MINUTES, dayKey, groupNotesByDay } from './lib/core.js';
 import { clock, downloadJson, h, today } from './lib/ui.js';
 
 let notes = [];
@@ -19,7 +19,9 @@ function noteRow(note) {
   return h('li', { class: 'note' },
     h('time', { class: 'muted', datetime: note.ts, title: when.toLocaleString('en-GB') }, clock(when)),
     h('span', { class: 'host', title: note.url }, note.host),
-    h('span', { class: 'text' }, note.text),
+    h('span', { class: 'text' },
+      note.unblocked && h('span', { class: 'tag', title: `Took a ${PASS_MINUTES}-minute pass` }, 'Unblocked'),
+      note.text),
     h('button', {
       class: 'icon danger',
       title: 'Delete note',
@@ -48,7 +50,7 @@ $('#export').addEventListener('click', () => {
     exportedAt: new Date().toISOString(),
     days: groupNotesByDay(notes).map((g) => ({
       day: g.day,
-      notes: g.notes.map(({ ts, host, url, text }) => ({ ts, host, url, reason: text })),
+      notes: g.notes.map(({ ts, host, url, text, unblocked = false }) => ({ ts, host, url, reason: text, unblocked })),
     })),
   });
 });

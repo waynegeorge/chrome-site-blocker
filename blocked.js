@@ -11,15 +11,18 @@ $('notes').addEventListener('click', openNotes);
 
 let currentState = null;
 
+// Sends a message to the service worker, showing any error under the reason box.
+async function send(msg) {
+  const res = await chrome.runtime.sendMessage(msg);
+  if (!res?.ok) $('note-status').textContent = `Could not save: ${res?.error ?? 'unknown error'}`;
+  return Boolean(res?.ok);
+}
+
 // Saves the typed reason, if any. Returns false only if there was text and saving failed.
 async function saveNote() {
   const text = $('note-text').value.trim();
   if (!text) return true;
-  const res = await chrome.runtime.sendMessage({ type: 'note', url: original, text });
-  if (!res?.ok) {
-    $('note-status').textContent = `Could not save: ${res?.error ?? 'unknown error'}`;
-    return false;
-  }
+  if (!(await send({ type: 'note', url: original, text }))) return false;
   $('note-text').value = '';
   $('note-status').textContent = 'Note saved.';
   return true;
@@ -34,14 +37,19 @@ $('note-form').addEventListener('submit', async (e) => {
 $('note-text').addEventListener('input', () => { $('note-status').textContent = ''; });
 
 $('go').addEventListener('click', async () => {
+  const text = $('note-text').value.trim();
+  const blocked = currentState === 'blocked';
+  // A pass needs a reason, which is saved as a note marked as an unblock.
+  if (blocked && !text) {
+    $('note-status').textContent = 'Enter a reason to unblock.';
+    return $('note-text').focus();
+  }
   $('go').disabled = true;
-  // An unsaved reason goes with the visit rather than being lost.
-  if (!(await saveNote())) {
+  // Otherwise an unsaved reason goes with the visit rather than being lost.
+  const ok = blocked ? await send({ type: 'pass', url: original, text }) : await saveNote();
+  if (!ok) {
     $('go').disabled = false;
     return;
-  }
-  if (currentState === 'blocked') {
-    await chrome.runtime.sendMessage({ type: 'pass', url: original });
   }
   location.replace(original);
 });
@@ -65,11 +73,13 @@ async function render() {
     $('lift').textContent = status.until ? `Lifts at ${formatWhen(status.until, now)}` : 'Blocked at all times';
     $('countdown').textContent = status.until ? `in ${formatDuration(status.until - now)}` : '';
     $('go').textContent = `Give me ${PASS_MINUTES} minutes`;
+    $('note-label').textContent = 'Reason for visiting (required to unblock)';
   } else {
     $('reason').textContent = status ? 'The block has lifted.' : 'This site is no longer on your block list.';
     $('lift').textContent = '';
     $('countdown').textContent = '';
     $('go').textContent = 'Continue to site';
+    $('note-label').textContent = 'Reason for visiting';
   }
   $('go').hidden = !host;
   $('note-form').hidden = !host;

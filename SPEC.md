@@ -1,7 +1,7 @@
 # Site Blocker — Specification
 
 A personal Chrome extension (Manifest V3) that blocks chosen websites during scheduled times.
-It is deliberately low-friction: it can be disabled or edited at any time, and a 5-minute pass is one click away.
+It is deliberately low-friction: it can be disabled or edited at any time, and a 5-minute pass is available after giving a reason.
 
 ## Sites
 
@@ -40,7 +40,7 @@ Default sites (all enabled, all on the Default schedule):
 - Navigating to a blocked site redirects to the block page.
 - When a block starts, any tabs already open on that site switch to the block page immediately.
 - The block page shows the domain, the schedule that is blocking it, and when the block lifts (time and countdown).
-- **5-minute pass:** one click, no confirmation, unblocks that site entry for 5 minutes and returns to the page. When the pass expires, open tabs switch back to the block page.
+- **5-minute pass:** requires a reason (see Notes), no confirmation, unblocks that site entry for 5 minutes and returns to the page. When the pass expires, open tabs switch back to the block page.
 - If a block lifts while the block page is open, it offers a "Continue to site" button.
 
 ## Activity log
@@ -53,9 +53,10 @@ Default sites (all enabled, all on the Default schedule):
 ## Notes
 
 - The block page has a "Reason for visiting" box. Saving it records a note with the domain (host), timestamp and reason.
-- If a reason has been typed but not saved when the pass or "Continue to site" button is clicked, it is saved first.
+- Taking a 5-minute pass requires a reason: the pass is refused while the box is empty. The reason is saved as a note marked **Unblocked**.
+- If a reason has been typed but not saved when the "Continue to site" button is clicked, it is saved first.
 - Reasons are limited to 1,000 characters.
-- The notes page lists notes grouped by day (newest first), each row showing time, domain and reason, with a ✕ to delete it (no confirmation).
+- The notes page lists notes grouped by day (newest first), each row showing time, domain and reason (tagged "Unblocked" if a pass was taken), with a ✕ to delete it (no confirmation).
 - All notes can be exported as a single JSON file, grouped by day.
 
 ## Settings import/export

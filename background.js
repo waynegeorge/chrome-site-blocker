@@ -131,6 +131,17 @@ async function currentStatus(url) {
   return host && settings ? statusForHost(host, settings, passes, new Date()) : null;
 }
 
+function noteText(text) {
+  return String(text ?? '').trim().slice(0, MAX_NOTE_LENGTH);
+}
+
+// `extra` marks special notes, e.g. { unblocked: true } for the reason given when taking a pass.
+async function addNote(url, text, extra = {}) {
+  const { notes = [] } = await chrome.storage.local.get('notes');
+  notes.push({ id: crypto.randomUUID(), ts: new Date().toISOString(), host: hostFromUrl(url), url, text, ...extra });
+  await chrome.storage.local.set({ notes });
+}
+
 function handleMessage(msg) {
   return serial(async () => {
     const status = await currentStatus(msg.url);
@@ -141,23 +152,25 @@ function handleMessage(msg) {
     }
 
     if (msg.type === 'pass') {
+      const text = noteText(msg.text);
       if (status?.state === 'blocked') {
+        if (!text) return { ok: false, error: 'A reason is required to unblock.' };
+        await addNote(msg.url, text, { unblocked: true });
         const { passes = {} } = await chrome.storage.local.get('passes');
         passes[status.site.id] = Date.now() + PASS_MINUTES * 60_000;
         await chrome.storage.local.set({ passes });
         await appendLog('pass', msg.url, status);
         await applyBlocking(); // already inside the queue, so call directly
+      } else if (text) {
+        await addNote(msg.url, text); // the block lifted meanwhile, so keep the reason as a plain note
       }
       return { ok: true };
     }
 
     if (msg.type === 'note') {
-      const text = String(msg.text ?? '').trim().slice(0, MAX_NOTE_LENGTH);
-      const host = hostFromUrl(msg.url);
-      if (!text || !host) return { ok: false, error: 'A note needs a reason and a site.' };
-      const { notes = [] } = await chrome.storage.local.get('notes');
-      notes.push({ id: crypto.randomUUID(), ts: new Date().toISOString(), host, url: msg.url, text });
-      await chrome.storage.local.set({ notes });
+      const text = noteText(msg.text);
+      if (!text || !hostFromUrl(msg.url)) return { ok: false, error: 'A note needs a reason and a site.' };
+      await addNote(msg.url, text);
       return { ok: true };
     }
 
