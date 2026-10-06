@@ -2,6 +2,9 @@
 
 A personal Chrome extension that blocks chosen websites during scheduled times. See [SPEC.md](SPEC.md) for the full behaviour.
 
+<img width="487" height="525" alt="image" src="https://github.com/user-attachments/assets/acee0147-69b6-4925-9e3a-ec9f049e9409" />
+
+
 ## Install (developer mode)
 
 1. Open `chrome://extensions`.
